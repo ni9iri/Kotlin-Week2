@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bmi.ui.theme.BmiTheme
 
 
@@ -35,7 +36,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
                     Bmi()
                 }
             }
@@ -44,12 +44,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Bmi() {
-    var heightInput: String by remember { mutableStateOf("") }
+fun Bmi(BmiViewModel: BmiViewModel = viewModel()) {
+    /*var heightInput: String by remember { mutableStateOf("") }
     var weightInput: String by remember { mutableStateOf("") }
     val height = heightInput.toFloatOrNull() ?: 0.0f
     val weight = weightInput.toIntOrNull() ?: 0
     val bmi = if (weight > 0 && height > 0) weight / (height * height) else 0.0
+     */
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -65,8 +66,8 @@ fun Bmi() {
         )
 
         OutlinedTextField(
-            value = heightInput,
-            onValueChange = {heightInput = it.replace(',', '.')},
+            value = BmiViewModel.heightInput,
+            onValueChange = {BmiViewModel.changeHeightInput(it)},
             label = {Text(text = "Height")},
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) ,
@@ -74,27 +75,21 @@ fun Bmi() {
             )
 
         OutlinedTextField(
-            value = weightInput,
-            onValueChange = {weightInput = it.replace(',', '.')},
+            value = BmiViewModel.weightInput,
+            onValueChange = {BmiViewModel.changeWeightInput(it)},
             label = {Text(text = "Weight")},
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
-        Text(text = stringResource(R.string.result, String.format("%.2f", bmi).replace(',','.')))
+        Text(text = stringResource(R.string.result, String.format("%.2f",BmiViewModel.bmi).replace(',','.')))
     }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     BmiTheme {
-        Greeting("Android")
         Bmi()
     }
 }
